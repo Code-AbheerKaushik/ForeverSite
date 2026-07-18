@@ -11,7 +11,7 @@ function OrderSuccess() {
     };
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo(0, 0);
     }, []);
 
     return (
@@ -46,7 +46,7 @@ function OrderSuccess() {
 
                 <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-500">Payment Method:</span>
-                    <strong className="text-gray-800 font-medium">{paymentMethod === 'COD' ? 'Cash On Delivery' : paymentMethod}</strong>
+                    <strong className="text-gray-800 font-medium">{paymentMethod === 'COD' ? 'Cash On Delivery' : paymentMethod === 'UPI_DEMO' ? 'UPI Demo' : paymentMethod}</strong>
                 </div>
 
                 <div className="flex justify-between">
@@ -56,7 +56,13 @@ function OrderSuccess() {
             </div>
 
             {/* Actions */}
-            <div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                    onClick={() => navigate("/my-orders")}
+                    className="border border-gray-300 px-8 py-3 text-sm rounded text-gray-700 hover:border-black hover:text-black transition-colors"
+                >
+                    VIEW ORDERS
+                </button>
                 <button
                     onClick={() => navigate("/")}
                     className="bg-black text-white px-8 py-3 text-sm rounded active:bg-gray-800 transition-colors"

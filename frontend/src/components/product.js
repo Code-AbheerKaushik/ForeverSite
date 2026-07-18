@@ -1,16 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import { assets } from '../assets/frontend_assets/assets';
 import { CartContext } from './context';
 import Alert from './Alert';
 import ImageWithSpinner from './ImageWithSpinner';
 import { API_BASE_URL } from '../config';
+import { getCachedProduct, getProductById, preloadImages } from '../utils/productData';
 
 function Product(props) {
-    const navigate = useNavigate();
     const { id } = useParams();
-    const [item, setItem] = useState(null);
-    const [displayImg, setdisplayImg] = useState();
+    const location = useLocation();
+    const routedProduct = location.state?.product?._id === id ? location.state.product : null;
+    const [item, setItem] = useState(() => routedProduct || getCachedProduct(id));
+    const [displayImg, setdisplayImg] = useState(() => (routedProduct || getCachedProduct(id))?.image?.[0]);
     const [size, setSize] = useState("");
     const [alert, setAlert] = useState(null);
     const { setCartNo, setcartarray } = useContext(CartContext);
@@ -20,23 +22,25 @@ function Product(props) {
         setTimeout(() => setAlert({ message, type }), 10);
     };
 
-    const getItem = async () => {
-        const url = `${API_BASE_URL}/products/getItem/${id}`;
-        try {
-            const res = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            });
+    const getItem = useCallback(async () => {
+        const cachedProduct = routedProduct || getCachedProduct(id);
+        if (cachedProduct) {
+            setItem(cachedProduct);
+            setdisplayImg(cachedProduct.image?.[0]);
+            preloadImages(cachedProduct.image || [], 6);
+            return;
+        }
 
-            const data = await res.json();
-            setItem(data.data);
-            setdisplayImg(data.data.image[0]);
+        setItem(null);
+        try {
+            const product = await getProductById(id);
+            setItem(product);
+            setdisplayImg(product.image?.[0]);
+            preloadImages(product.image || [], 6);
         } catch (error) {
             console.log("error in getting item: ", error);
         }
-    };
+    }, [id, routedProduct]);
     
     const addcart = async () => {
         if (size === "") {
@@ -99,7 +103,7 @@ function Product(props) {
 
     useEffect(() => {
         getItem();
-    }, []);
+    }, [getItem]);
     const rev = [];
     const imgclick = (i) => {
         setdisplayImg(i)
@@ -135,7 +139,7 @@ function Product(props) {
             <div className='flex flex-col lg:flex-row-reverse gap-4 w-full lg:w-1/2'>
                 {/* Main Display Image */}
                 <div className='w-full aspect-[4/5] sm:aspect-square lg:aspect-[4/5] bg-gray-50 relative overflow-hidden rounded-lg'>
-                    <ImageWithSpinner className='w-full h-full object-cover' src={displayImg} alt={item.name} />
+                    <ImageWithSpinner loading="eager" fetchPriority="high" className='w-full h-full object-cover' src={displayImg} alt={item.name} />
                 </div>
                 
                 {/* Thumbnails Row/Column */}
@@ -149,7 +153,7 @@ function Product(props) {
                                     onClick={() => imgclick(i)} 
                                     className={`w-[70px] sm:w-[90px] lg:w-[80px] shrink-0 aspect-square rounded-md overflow-hidden cursor-pointer relative border-2 transition-all ${isSelected ? 'border-black' : 'border-transparent opacity-70 hover:opacity-100'}`}
                                 >
-                                    <ImageWithSpinner src={i} alt='' className='w-full h-full object-cover' />
+                                    <ImageWithSpinner loading="eager" src={i} alt='' className='w-full h-full object-cover' />
                                 </div>
                             )
                         })

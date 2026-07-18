@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Card from './card'
-import { API_BASE_URL } from '../config'
+import { getCachedCollectionProducts, getCollectionProducts, preloadImages } from '../utils/productData'
 
 function Collection(props) {
-  const [allProducts, setAllProducts] = useState();
+  const cachedDefaultCollection = getCachedCollectionProducts();
+  const [allProducts, setAllProducts] = useState(cachedDefaultCollection || []);
+  const [loading, setLoading] = useState(!cachedDefaultCollection);
   const [what, setWhat] = useState("none");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [category, setCategory] = useState({
@@ -17,52 +19,34 @@ function Collection(props) {
     "Winterwear": false
   });
 
-  const sorting = (hello)=>{
-    if(!hello)return;
-    const array = [...hello]
+  const sorting = useCallback((products) => {
+    const array = [...products];
     if(what==="low-high"){
         array.sort( (a, b) => a.price - b.price);
     }
     if(what==="high-low"){
        array.sort( (a, b) => b.price - a.price);
     }
-    if(what==="none"){
-        array.sort( (a, b) => a.id - b.id);
-    }
     return array;
-  }
+  }, [what]);
 
-  useEffect(()=>{if(allProducts)setAllProducts(sorting(allProducts))},[what]);
+  const selectedCategories = useMemo(() => Object.keys(category).filter(key => category[key]), [category]);
+  const selectedSubCategories = useMemo(() => Object.keys(subCategory).filter(key => subCategory[key]), [subCategory]);
+  const sortedProducts = useMemo(() => sorting(allProducts), [allProducts, sorting]);
 
-  const getFilteredProducts = async() => {
-    let cat = [];
-    let sub=[];
-    let searchtxt = props.searchtxt
-    if (category["Men"]) cat.push("Men");
-    if (category["Women"]) cat.push("Women");
-    if (category["Kids"]) cat.push("Kids");
-    if (subCategory["Topwear"]) sub.push("Topwear");
-    if (subCategory["Bottomwear"]) sub.push("Bottomwear");
-    if (subCategory["Winterwear"]) sub.push("Winterwear");
-    const url = `${API_BASE_URL}/products/filtered`;
+  const getFilteredProducts = useCallback(async () => {
     try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          cat,sub,searchtxt
-        })
-      })
-
-      const response = await res.json();
-      setAllProducts(sorting(response.data));
+      return await getCollectionProducts({
+        cat: selectedCategories,
+        sub: selectedSubCategories,
+        searchtxt: props.searchtxt || '',
+      });
     }
     catch (error) {
       console.log("error in getting products:", error)
+      return [];
     }
-  }
+  }, [props.searchtxt, selectedCategories, selectedSubCategories]);
 
   const categoryClick = (c) => {
     setCategory(prev => ({
@@ -79,8 +63,32 @@ function Collection(props) {
   };
 
   useEffect(() => {
-    getFilteredProducts().then(() => sorting());
-  }, [category, subCategory, props.searchtxt]);
+    let isActive = true;
+    const filters = {
+      cat: selectedCategories,
+      sub: selectedSubCategories,
+      searchtxt: props.searchtxt || '',
+    };
+    const cachedProducts = getCachedCollectionProducts(filters);
+    if (cachedProducts) {
+      setAllProducts(cachedProducts);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+    const delay = window.setTimeout(async () => {
+      const products = await getFilteredProducts();
+      if (!isActive) return;
+      setAllProducts(products);
+      preloadImages(products.map(product => product.image?.[0]), 4);
+      setLoading(false);
+    }, props.searchtxt ? 250 : 0);
+
+    return () => {
+      isActive = false;
+      window.clearTimeout(delay);
+    };
+  }, [getFilteredProducts, props.searchtxt, selectedCategories, selectedSubCategories]);
 
   const activeFiltersCount = Object.values(category).filter(Boolean).length + Object.values(subCategory).filter(Boolean).length;
 
@@ -176,14 +184,18 @@ function Collection(props) {
 
         {/* Product Grid */}
         <div className='mt-6'>
-          {allProducts && allProducts.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <ProductGridSkeleton count={8} />
+            </div>
+          ) : sortedProducts.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {allProducts?.map(item => (
-                <Card key={item._id} product={item} />
+              {sortedProducts.map((item, index) => (
+                <Card key={item._id} product={item} priority={index < 4} />
               ))}
             </div>
           )}
@@ -231,6 +243,16 @@ function Collection(props) {
 
     </div>
   )
+}
+
+function ProductGridSkeleton({ count }) {
+  return Array.from({ length: count }, (_, index) => (
+    <div key={index} className="animate-pulse rounded-md border border-gray-100 bg-white p-2 sm:p-3">
+      <div className="aspect-[3/4] rounded bg-gray-200" />
+      <div className="mt-3 h-3 w-4/5 rounded bg-gray-200" />
+      <div className="mt-2 h-4 w-1/3 rounded bg-gray-200" />
+    </div>
+  ));
 }
 
 export default Collection

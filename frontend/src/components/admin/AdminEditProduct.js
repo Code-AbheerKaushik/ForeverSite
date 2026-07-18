@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
+import { invalidateProductCatalog } from '../../utils/productData';
 
 const CATEGORIES     = ['Men', 'Women', 'Kids'];
 const SUB_CATEGORIES = ['Topwear', 'Bottomwear', 'Winterwear'];
@@ -78,6 +79,7 @@ function AdminEditProduct() {
             });
             const data = await res.json();
             if (data.success) {
+                invalidateProductCatalog();
                 setSuccess('Product updated successfully!');
                 setTimeout(() => navigate('/admin/products'), 1000);
             } else {

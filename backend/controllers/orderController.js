@@ -6,6 +6,7 @@ const createOrder = async (req, res) => {
     try {
         const userId = req.user.id;
         const { products, shippingAddress, paymentMethod } = req.body;
+        const normalizedPaymentMethod = paymentMethod === 'UPI_DEMO' ? 'UPI_DEMO' : 'COD';
 
         if (!products || !Array.isArray(products) || products.length === 0) {
             return res.status(400).json({ success: false, message: "No products in order" });
@@ -41,8 +42,8 @@ const createOrder = async (req, res) => {
             products: dbProducts,
             shippingAddress,
             amount: totalAmount,
-            paymentMethod: paymentMethod || "COD",
-            paymentStatus: "pending",
+            paymentMethod: normalizedPaymentMethod,
+            paymentStatus: normalizedPaymentMethod === 'UPI_DEMO' ? 'paid' : 'pending',
             orderStatus: "placed"
         });
 

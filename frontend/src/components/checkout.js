@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../config';
 
 function Checkout() {
     const navigate = useNavigate();
-    const { cartarray, setcartarray, cartTotal, setCartNo } = useContext(CartContext);
+    const { cartarray, setcartarray, cartTotal, setCartNo, setCartTotal } = useContext(CartContext);
     
     const [shippingInfo, setShippingInfo] = useState({
         fullName: "",
@@ -18,6 +18,7 @@ function Checkout() {
     });
     const [paymentMethod, setPaymentMethod] = useState("COD");
     const [alert, setAlert] = useState(null); // { message, type }
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     // Redirect guest users to login; prefill default address if available
     useEffect(() => {
@@ -26,7 +27,7 @@ function Checkout() {
             navigate("/login");
             return;
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo(0, 0);
 
         // Try to prefill from saved default address
         fetch(`${API_BASE_URL}/user/profile`, {
@@ -62,34 +63,56 @@ function Checkout() {
         }));
     };
 
-    const handlePlaceOrder = async () => {
+    const getValidatedOrderPayload = () => {
         const { fullName, phone, address, city, state, pincode } = shippingInfo;
 
         // Validation
         if (!fullName.trim() || !phone.trim() || !address.trim() || !city.trim() || !state.trim() || !pincode.trim()) {
             showAlert("Please fill in all delivery details.", "error");
-            return;
+            return null;
         }
 
         // Phone number length validation (at least 10 digits)
         const cleanPhone = phone.replace(/\D/g, "");
         if (cleanPhone.length < 10) {
             showAlert("Please enter a valid phone number (at least 10 digits).", "error");
-            return;
+            return null;
         }
 
         // Pincode validation (usually 5 or 6 digits)
         const cleanPincode = pincode.replace(/\D/g, "");
         if (cleanPincode.length < 5 || cleanPincode.length > 6) {
             showAlert("Please enter a valid pincode (5 or 6 digits).", "error");
-            return;
+            return null;
         }
 
         if (cartarray.length === 0) {
             showAlert("Your cart is empty.", "error");
+            return null;
+        }
+
+        return {
+            products: cartarray,
+            shippingAddress: shippingInfo,
+            paymentMethod,
+        };
+    };
+
+    const handlePlaceOrder = async () => {
+        const orderPayload = getValidatedOrderPayload();
+        if (!orderPayload) return;
+
+        if (paymentMethod === 'UPI_DEMO') {
+            const pendingPayment = {
+                ...orderPayload,
+                amount: cartTotal > 0 ? cartTotal + 10 : 0,
+            };
+            sessionStorage.setItem('foreverbuy:pending-upi-payment', JSON.stringify(pendingPayment));
+            navigate('/payment/demo', { state: { pendingPayment } });
             return;
         }
 
+        setIsPlacingOrder(true);
         try {
             const url = `${API_BASE_URL}/orders/create`;
             const res = await fetch(url, {
@@ -110,6 +133,7 @@ function Checkout() {
                 // Clear cart locally
                 setcartarray([]);
                 setCartNo(0);
+                setCartTotal(0);
 
                 // Redirect to success page
                 navigate("/order-success", { 
@@ -125,6 +149,8 @@ function Checkout() {
         } catch (error) {
             console.log("Error placing order:", error);
             showAlert("Something went wrong. Please check your connection.", "error");
+        } finally {
+            setIsPlacingOrder(false);
         }
     };
 
@@ -253,14 +279,22 @@ function Checkout() {
                             <p className="w-8 sm:w-12 h-[1px] sm:h-[2px] bg-gray-700"></p>
                         </div>
 
-                        <div className="flex gap-3 flex-col lg:flex-row">
-                            <div 
-                                onClick={() => setPaymentMethod("COD")}
-                                className="flex items-center gap-3 border p-2 px-3.5 cursor-pointer rounded bg-slate-50 hover:bg-slate-100 transition-colors"
-                            >
-                                <span className={`min-w-4 h-4 border rounded-full ${paymentMethod === 'COD' ? 'bg-black' : ''}`} />
-                                <p className="text-gray-600 text-sm font-medium">CASH ON DELIVERY</p>
-                            </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Payment method">
+                            <PaymentOption
+                                active={paymentMethod === 'COD'}
+                                onSelect={() => setPaymentMethod('COD')}
+                                title="Cash on Delivery"
+                                description="Pay when your order arrives"
+                                icon="₹"
+                            />
+                            <PaymentOption
+                                active={paymentMethod === 'UPI_DEMO'}
+                                onSelect={() => setPaymentMethod('UPI_DEMO')}
+                                title="UPI Demo"
+                                description="Secure demo payment flow"
+                                icon="UPI"
+                                badge="Demo"
+                            />
                         </div>
                     </div>
 
@@ -268,14 +302,43 @@ function Checkout() {
                     <div className="w-full text-end mt-4">
                         <button 
                             onClick={handlePlaceOrder}
-                            className="bg-black text-white text-sm px-16 py-3 rounded active:bg-gray-800 transition-colors"
+                            disabled={isPlacingOrder}
+                            className="w-full bg-black text-white text-sm px-8 py-3.5 rounded active:bg-gray-800 transition-colors disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-16"
                         >
-                            PLACE ORDER
+                            {isPlacingOrder ? 'PLACING ORDER…' : paymentMethod === 'UPI_DEMO' ? 'CONTINUE TO UPI' : 'PLACE ORDER'}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+    );
+}
+
+function PaymentOption({ active, onSelect, title, description, icon, badge }) {
+    return (
+        <button
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={onSelect}
+            className={`relative flex min-h-[112px] w-full items-start gap-3 rounded-lg border p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${
+                active ? 'border-black bg-gray-50 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-400 hover:bg-gray-50'
+            }`}
+        >
+            <span className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${active ? 'border-black bg-black' : 'border-gray-300 bg-white'}`}>
+                {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+            </span>
+            <span className={`flex h-10 min-w-10 items-center justify-center rounded-md px-2 text-xs font-bold ${active ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'}`}>
+                {icon}
+            </span>
+            <span className="min-w-0">
+                <span className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                    {title}
+                    {badge && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700">{badge}</span>}
+                </span>
+                <span className="mt-1 block text-xs leading-relaxed text-gray-500">{description}</span>
+            </span>
+        </button>
     );
 }
 

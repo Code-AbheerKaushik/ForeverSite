@@ -1,47 +1,47 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/frontend_assets/assets'
 import Card from "./card";
-import { useState } from 'react';
-import { API_BASE_URL } from '../config';
 import { Link } from 'react-router-dom';
+import { getBestSellerProducts, getCachedBestSellerProducts, getCachedLatestProducts, getCollectionProducts, getLatestProducts, preloadImages } from '../utils/productData';
 function Hero() {
-    const [bestSellers, setBestSeller] = useState([]);
-    const [latestProducts, setLatestProducts] = useState([]);
-    const getBsetSeller = async() => {
-        try {
-            const url = `${API_BASE_URL}/products/getbestseller`;
-            const res = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            });
-            const data = await res.json();
-            setBestSeller(data.data);
-        } catch (error) {
-            console.log("error is fetching bestseller:", error);
-        }
-    };
-const getLatestProducts = async () => {
-    try {
-        const url = `${API_BASE_URL}/products/getlatest`;
+    const cachedLatest = getCachedLatestProducts();
+    const cachedBestSellers = getCachedBestSellerProducts();
+    const [bestSellers, setBestSeller] = useState(cachedBestSellers || []);
+    const [latestProducts, setLatestProducts] = useState(cachedLatest || []);
+    const [latestLoading, setLatestLoading] = useState(!cachedLatest);
+    const [bestSellerLoading, setBestSellerLoading] = useState(!cachedBestSellers);
 
-        const res = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
-
-        const data = await res.json();
-        setLatestProducts(data.data)
-    } catch (error) {
-        console.log("error in fetching latestproducts:", error);
-    }
-};
 useEffect(() => {
-    getLatestProducts();
-    getBsetSeller();
+    let isActive = true;
+
+    getLatestProducts()
+        .then(products => {
+            if (!isActive) return;
+            setLatestProducts(products || []);
+            preloadImages((products || []).map(product => product.image?.[0]), 4);
+        })
+        .catch(error => console.log("error in fetching latestproducts:", error))
+        .finally(() => isActive && setLatestLoading(false));
+
+    getBestSellerProducts()
+        .then(products => {
+            if (!isActive) return;
+            setBestSeller(products || []);
+        })
+        .catch(error => console.log("error is fetching bestseller:", error))
+        .finally(() => isActive && setBestSellerLoading(false));
+
+    // Warm the default collection after the home content has started rendering.
+    const warmCollection = window.setTimeout(() => {
+        getCollectionProducts()
+            .then(products => preloadImages((products || []).map(product => product.image?.[0]), 8))
+            .catch(() => {});
+    }, 900);
+
+    return () => {
+        isActive = false;
+        window.clearTimeout(warmCollection);
+    };
 }, []);
 return (
     <>
@@ -61,6 +61,9 @@ return (
             <img
                 src={assets.hero_img}
                 alt="hero"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className='w-full md:w-1/2 h-[250px] sm:h-[350px] md:h-[450px] object-cover'
             />
         </div>
@@ -76,8 +79,8 @@ return (
         </div>
         <div className='w-full max-w-[1240px] mx-auto px-4'>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {latestProducts.map(item => (
-                    <Card key={item._id} product={item} />
+                {latestLoading ? <ProductGridSkeleton count={5} /> : latestProducts.map((item, index) => (
+                    <Card key={item._id} product={item} priority={index < 4} />
                 ))}
             </div>
         </div>
@@ -93,7 +96,7 @@ return (
         </div>
         <div className='w-full max-w-[1240px] mx-auto px-4'>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {bestSellers.map(item => (
+                {bestSellerLoading ? <ProductGridSkeleton count={5} /> : bestSellers.map(item => (
                     <Card key={item._id} product={item} />
                 ))}
             </div>
@@ -145,6 +148,16 @@ return (
         </div>
     </>
 )
+}
+
+function ProductGridSkeleton({ count }) {
+    return Array.from({ length: count }, (_, index) => (
+        <div key={index} className="animate-pulse rounded-md border border-gray-100 bg-white p-2 sm:p-3">
+            <div className="aspect-[3/4] rounded bg-gray-200" />
+            <div className="mt-3 h-3 w-4/5 rounded bg-gray-200" />
+            <div className="mt-2 h-4 w-1/3 rounded bg-gray-200" />
+        </div>
+    ));
 }
 
 export default Hero 

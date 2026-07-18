@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '../config';
 
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_TTL_MS = 2 * 60 * 1000;
 const CACHE_PREFIX = 'foreverbuy:catalog:';
 const memoryCache = new Map();
 const inFlightRequests = new Map();
@@ -72,6 +72,34 @@ function fetchCached(key, request) {
 }
 
 export const getCachedProduct = (id) => readCache(`product:${id}`);
+export const getCachedLatestProducts = () => readCache('latest');
+export const getCachedBestSellerProducts = () => readCache('bestsellers');
+
+function collectionCacheKey({ cat = [], sub = [], searchtxt = '' } = {}) {
+  return `collection:${JSON.stringify({
+    cat: [...cat].sort(),
+    sub: [...sub].sort(),
+    searchtxt: searchtxt.trim().toLowerCase(),
+  })}`;
+}
+
+export const getCachedCollectionProducts = (filters) => readCache(collectionCacheKey(filters));
+
+export function invalidateProductCatalog() {
+  [...memoryCache.keys()].forEach((key) => {
+    if (key === 'latest' || key === 'bestsellers' || key.startsWith('collection:') || key.startsWith('product:')) {
+      memoryCache.delete(key);
+    }
+  });
+
+  try {
+    Object.keys(window.sessionStorage)
+      .filter(key => key.startsWith(CACHE_PREFIX))
+      .forEach(key => window.sessionStorage.removeItem(key));
+  } catch {
+    // Storage is optional; clearing the memory cache is sufficient.
+  }
+}
 
 export function getLatestProducts() {
   return fetchCached('latest', () => fetchJson(`${API_BASE_URL}/products/getlatest`));
@@ -87,7 +115,7 @@ export function getCollectionProducts({ cat = [], sub = [], searchtxt = '' } = {
     sub: [...sub].sort(),
     searchtxt: searchtxt.trim().toLowerCase(),
   };
-  const key = `collection:${JSON.stringify(normalizedFilters)}`;
+  const key = collectionCacheKey(normalizedFilters);
 
   return fetchCached(key, () => fetchJson(`${API_BASE_URL}/products/filtered`, {
     method: 'POST',

@@ -12,6 +12,7 @@ import Product from "./components/product";
 import Cart from "./components/cart";
 import Checkout from "./components/checkout";
 import OrderSuccess from "./components/order_success";
+import UpiDemoPayment from "./components/upi_demo_payment";
 import MyOrders from "./components/my_orders";
 import AdminPanel from "./components/admin_panel";
 import { useState } from "react";
@@ -37,6 +38,7 @@ function App() {
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/checkout" element={<Checkout/>}/>
         <Route path="/order-success" element={<OrderSuccess/>}/>
+        <Route path="/payment/demo" element={<UpiDemoPayment/>}/>
         <Route path="/my-orders" element={<MyOrders/>}/>
         {/* Admin — wildcard so nested routes inside AdminPanel work */}
         <Route path="/admin/*" element={<AdminPanel/>}/>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
+import { invalidateProductCatalog } from '../../utils/productData';
 
 const CATEGORIES    = ['Men', 'Women', 'Kids'];
 const SUB_CATEGORIES = ['Topwear', 'Bottomwear', 'Winterwear'];
@@ -66,6 +67,7 @@ function AdminAddProduct() {
             const data = await res.json();
 
             if (data.status || data.success) {
+                invalidateProductCatalog();
                 navigate('/admin/products');
             } else {
                 setError(data.message || 'Failed to add product.');

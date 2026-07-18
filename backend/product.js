@@ -1,6 +1,7 @@
 const product = require('./models/products');
 const userModel = require('./models/user')
 const jwt = require('jsonwebtoken')
+const setCatalogCache = (res) => res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
 const addProduct = async (req, res) => {
     try {
         const { id, name, description, price, image, category, subCategory, sizes, date, bestseller } = req.body;
@@ -31,9 +32,9 @@ const addProduct = async (req, res) => {
 }
 const getAllProducts = async (req, res) => {
     try {
-        const allProducts = await product.find().limit(40);
+        const allProducts = await product.find().limit(40).lean();
 
-        return res.status(200).json({
+        return setCatalogCache(res).status(200).json({
             success: true,
             data: allProducts
         });
@@ -50,9 +51,10 @@ const getLatest = async (req, res) => {
     try {
         const latestProducts = await product.find()
             .sort({ _id: -1 })
-            .limit(10);
+            .limit(10)
+            .lean();
 
-        return res.status(200).json({
+        return setCatalogCache(res).status(200).json({
             success: true,
             data: latestProducts
         });
@@ -68,8 +70,8 @@ const getLatest = async (req, res) => {
 const getItem = async (req, res) => {
     const id = req.params.id;
     try {
-        const item = await product.findOne({ _id: id })
-        return res.status(200).json({
+        const item = await product.findOne({ _id: id }).lean()
+        return setCatalogCache(res).status(200).json({
             success: true,
             data: item
         });
@@ -113,7 +115,7 @@ const getFiltered = async (req, res) => {
         ];
     }
     try {
-        const products = await product.find(filter);
+        const products = await product.find(filter).lean();
         res.status(201).json({
             success: true,
             data: products
@@ -132,7 +134,7 @@ const getbestseller = async (req, res) => {
     let filter = {};
     filter.bestseller = true;
     try {
-        const products = await product.find(filter);
+        const products = await product.find(filter).lean();
         res.status(201).json({
             success: true,
             data: products

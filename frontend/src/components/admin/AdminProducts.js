@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
+import { invalidateProductCatalog } from '../../utils/productData';
 
 const CATEGORIES = ['Men', 'Women', 'Kids'];
 
@@ -48,6 +49,7 @@ function AdminProducts() {
                 method: 'DELETE',
                 headers: { authorization: token },
             });
+            invalidateProductCatalog();
             setDeleteTarget(null);
             fetchProducts();
         } catch (err) {

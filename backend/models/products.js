@@ -47,4 +47,7 @@ const productSchema = new mongoose.Schema({
     }
 });
 
+productSchema.index({ bestseller: 1 });
+productSchema.index({ category: 1, subCategory: 1 });
+
 module.exports = mongoose.model("product", productSchema);
