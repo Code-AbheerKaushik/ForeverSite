@@ -69,14 +69,14 @@ function MyOrders() {
 
     if (loading) {
         return (
-            <div className="pt-20 w-[1240px] flex justify-center items-center mx-auto my-10 font-[Outfit] text-gray-500">
+            <div className="pt-20 w-full max-w-[1240px] flex justify-center items-center mx-auto my-10 px-4 font-[Outfit] text-gray-500">
                 <p className="text-2xl tracking-wide">Loading your orders...</p>
             </div>
         );
     }
 
     return (
-        <div className="pt-14 w-[1240px] flex flex-col mx-auto my-10 font-[Outfit]">
+        <div className="pt-14 w-full max-w-[1240px] flex flex-col mx-auto my-10 px-4 font-[Outfit]">
             {alert && (
                 <Alert
                     message={alert.message}

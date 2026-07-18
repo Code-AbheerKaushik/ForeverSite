@@ -103,12 +103,12 @@ function Signup() {
                     onClose={() => setAlert(null)}
                 />
             )}
-            <div className='flex flex-col space-y-3 items-center justify-center'>
+            <div className='flex flex-col space-y-3 items-center justify-center px-4 w-full'>
                 <div className='flex justify-center mt-20 items-center'>
                     <div className='flex justify-center text-4xl font-normal font-serif text-gray-700 my-2'>Signup</div>
                     <div className='bg-black px-1 w-8 ml-2 h-[1.5px]'></div>
                 </div>
-                <div className='shadow-inner border border-black w-[450px] py-2 px-3 '>
+                <div className='shadow-inner border border-black w-full max-w-[450px] py-2 px-3 '>
                     <input
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -119,10 +119,10 @@ function Signup() {
                         onChange={onChangeE}
                         type="text"
                         placeholder="Email"
-                        className="flex-1 outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
+                        className="w-full outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
                     />
                 </div>
-                <div className='shadow-inner border border-black w-[450px] py-2 px-3 '>
+                <div className='shadow-inner border border-black w-full max-w-[450px] py-2 px-3 '>
                     <input
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -133,10 +133,10 @@ function Signup() {
                         onChange={onChangeP}
                         type="password"
                         placeholder="Password"
-                        className="flex-1 outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
+                        className="w-full outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
                     />
                 </div>
-                <div className='shadow-inner border border-black w-[450px] py-2 px-3 '>
+                <div className='shadow-inner border border-black w-full max-w-[450px] py-2 px-3 '>
                     <input
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -147,10 +147,10 @@ function Signup() {
                         onChange={onChangeR}
                         type="password"
                         placeholder="Re-enter Password"
-                        className="flex-1 outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
+                        className="w-full outline-none text-gray-700 text-lg font-[Outfit] placeholder:text-gray-400 bg-transparent"
                     />
                 </div>
-                <div className='w-[450px] flex justify-between'>
+                <div className='w-full max-w-[450px] flex justify-between text-sm sm:text-base'>
                     <p className='font-[Outfit] cursor-pointer'>Forgot your password?</p>
                     <p onClick={() => navigate("/login")} className='font-[Outfit] cursor-pointer'>Login</p>
                 </div>

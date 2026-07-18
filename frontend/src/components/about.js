@@ -15,10 +15,10 @@ function About() {
                 <img
                     src={assets.about_img}
                     alt=""
-                    className="w-[480px] h-[500px] object-cover"
+                    className="w-full md:w-[480px] h-auto md:h-[500px] object-cover"
                 />
 
-                <div className="flex flex-col justify-center max-w-[620px]">
+                <div className="flex flex-col justify-center w-full max-w-[620px]">
 
                     <p className="text-[17px] leading-9 text-gray-600">
                         Forever was born out of a passion for innovation and a desire

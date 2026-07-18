@@ -15,7 +15,7 @@ function OrderSuccess() {
     }, []);
 
     return (
-        <div className="pt-20 w-[1240px] flex flex-col items-center justify-center mx-auto my-10 font-[Outfit] text-center">
+        <div className="pt-20 w-full max-w-[1240px] flex flex-col items-center justify-center mx-auto my-10 px-4 font-[Outfit] text-center">
             {/* Green Success Badge */}
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
                 <span className="text-green-500 text-4xl font-bold">✓</span>

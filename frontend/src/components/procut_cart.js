@@ -136,55 +136,158 @@ function Product_cart(props) {
     if (!props.item) return null;
 
     return (
-        <div>
-            <div className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4">
+        <div className="py-4 border-b border-gray-150 text-gray-700">
+            {/* Mobile-first Stacked Card Layout (< sm) */}
+            <div className="flex sm:hidden gap-4 items-start w-full relative">
+                {/* Product Image */}
+                <div className="w-20 h-24 overflow-hidden relative rounded-md bg-gray-50 flex-shrink-0">
+                    <ImageWithSpinner
+                        className="w-full h-full object-cover"
+                        alt={props.item.name}
+                        src={props.item.image[0]}
+                    />
+                </div>
 
-                <div className="flex items-start gap-6">
-                    <div className="w-16 sm:w-20 h-20 sm:h-24 overflow-hidden relative flex-shrink-0">
+                {/* Details & Actions Container */}
+                <div className="flex-1 flex flex-col justify-between min-h-[96px]">
+                    <div>
+                        <div className="flex justify-between items-start gap-2">
+                            <p className="text-sm font-medium text-gray-800 line-clamp-2 leading-snug pr-6">
+                                {props.item.name}
+                            </p>
+                            <button 
+                                onClick={deleteclick} 
+                                className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded transition-colors"
+                                aria-label="Remove item"
+                            >
+                                <img
+                                    className="w-4 h-4"
+                                    alt="delete"
+                                    src={assets.bin_icon}
+                                />
+                            </button>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-3 mt-2">
+                            <span className="text-sm font-semibold text-gray-900">${props.item.price}</span>
+                            <span className="text-xs text-gray-400">|</span>
+                            
+                            {/* Size selector */}
+                            <div className="flex items-center gap-1">
+                                <span className="text-xs text-gray-500">Size:</span>
+                                <select
+                                    value={productsize}
+                                    onChange={sizechange}
+                                    className="px-1.5 py-0.5 border border-gray-300 rounded bg-slate-50 text-xs font-medium cursor-pointer outline-none"
+                                >
+                                    {props.item.sizes && props.item.sizes.map(s => (
+                                        <option key={s} value={s}>{s}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Quantity Selector */}
+                    <div className="flex items-center gap-2.5 mt-2">
+                        <span className="text-xs text-gray-500 font-medium">Qty:</span>
+                        <div className="flex items-center border border-gray-300 rounded bg-white">
+                            <button 
+                                onClick={() => productqty > 1 && updateCartItem(productqty - 1, undefined)}
+                                className="px-2 py-1 text-gray-500 hover:text-black font-semibold text-sm transition-colors border-r"
+                            >
+                                -
+                            </button>
+                            <input
+                                value={productqty}
+                                onChange={qtychange}
+                                className="w-10 text-center text-sm font-semibold outline-none py-0.5 bg-transparent"
+                                min="1"
+                                type="number"
+                            />
+                            <button 
+                                onClick={() => updateCartItem(productqty + 1, undefined)}
+                                className="px-2 py-1 text-gray-500 hover:text-black font-semibold text-sm transition-colors border-l"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Desktop Row Grid Layout (>= sm) */}
+            <div className="hidden sm:grid grid-cols-[4fr_2fr_0.5fr] items-center gap-4 w-full">
+                <div className="flex items-center gap-6">
+                    <div className="w-20 h-24 overflow-hidden relative rounded-md bg-gray-50 flex-shrink-0">
                         <ImageWithSpinner
                             className="w-full h-full object-cover"
-                            alt=""
+                            alt={props.item.name}
                             src={props.item.image[0]}
                         />
                     </div>
 
                     <div>
-                        <p className="text-xs sm:text-lg font-medium">
+                        <p className="text-base font-semibold text-gray-800 leading-tight">
                             {props.item.name}
                         </p>
 
-                        <div className="flex items-center gap-5 mt-2">
-                            <p>${props.item.price}</p>
-
-                            {/* Size dropdown */}
-                            <select
-                                value={productsize}
-                                onChange={sizechange}
-                                className="px-2 py-1 border bg-slate-50 text-sm cursor-pointer"
-                            >
-                                {props.item.sizes && props.item.sizes.map(s => (
-                                    <option key={s} value={s}>{s}</option>
-                                ))}
-                            </select>
+                        <div className="flex items-center gap-5 mt-2.5">
+                            <span className="text-lg font-bold text-gray-900">${props.item.price}</span>
+                            
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-400">Size:</span>
+                                <select
+                                    value={productsize}
+                                    onChange={sizechange}
+                                    className="px-2 py-1 border border-gray-300 rounded bg-slate-50 text-sm font-medium cursor-pointer"
+                                >
+                                    {props.item.sizes && props.item.sizes.map(s => (
+                                        <option key={s} value={s}>{s}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Quantity input */}
-                <input
-                    value={productqty}
-                    onChange={qtychange}
-                    className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
-                    min="1"
-                    type="number"
-                />
+                {/* Quantity Input */}
+                <div className="flex items-center justify-start pl-4">
+                    <div className="flex items-center border border-gray-300 rounded bg-white">
+                        <button 
+                            onClick={() => productqty > 1 && updateCartItem(productqty - 1, undefined)}
+                            className="px-3 py-1.5 text-gray-500 hover:text-black font-semibold transition-colors border-r"
+                        >
+                            -
+                        </button>
+                        <input
+                            value={productqty}
+                            onChange={qtychange}
+                            className="w-12 text-center text-sm font-semibold outline-none py-1 bg-transparent"
+                            min="1"
+                            type="number"
+                        />
+                        <button 
+                            onClick={() => updateCartItem(productqty + 1, undefined)}
+                            className="px-3 py-1.5 text-gray-500 hover:text-black font-semibold transition-colors border-l"
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
 
-                <img
-                    onClick={deleteclick}
-                    className="w-4 mr-4 sm:w-5 cursor-pointer"
-                    alt=""
-                    src={assets.bin_icon}
-                />
+                {/* Delete button */}
+                <button 
+                    onClick={deleteclick} 
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors flex justify-center items-center ml-auto"
+                    aria-label="Remove item"
+                >
+                    <img
+                        className="w-5 h-5 cursor-pointer"
+                        alt="delete"
+                        src={assets.bin_icon}
+                    />
+                </button>
             </div>
         </div>
     )

@@ -129,7 +129,7 @@ function Checkout() {
     };
 
     return (
-        <div className="pt-14 w-[1240px] flex flex-col mx-auto my-10 font-[Outfit]">
+        <div className="pt-14 w-full max-w-[1240px] flex flex-col mx-auto my-10 px-4 font-[Outfit]">
             {alert && (
                 <Alert
                     message={alert.message}
@@ -138,27 +138,25 @@ function Checkout() {
                 />
             )}
 
-            <div className="flex flex-col sm:flex-row justify-between gap-12 pt-5">
+            <div className="flex flex-col lg:flex-row justify-between gap-12 pt-5">
                 {/* Left Side: Delivery Information Form */}
                 <div className="flex-1 flex flex-col gap-4">
                     <div className="inline-flex gap-2 items-center mb-3">
-                        <p className="text-gray-500 text-2xl">
+                        <p className="text-gray-500 text-xl sm:text-2xl">
                             DELIVERY <span className="text-gray-700 font-medium">INFORMATION</span>
                         </p>
                         <p className="w-8 sm:w-12 h-[1px] sm:h-[2px] bg-gray-700"></p>
                     </div>
 
-                    <div className="flex gap-3">
-                        <input
-                            required
-                            name="fullName"
-                            value={shippingInfo.fullName}
-                            onChange={handleInputChange}
-                            type="text"
-                            placeholder="Full name"
-                            className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
-                        />
-                    </div>
+                    <input
+                        required
+                        name="fullName"
+                        value={shippingInfo.fullName}
+                        onChange={handleInputChange}
+                        type="text"
+                        placeholder="Full name"
+                        className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
+                    />
 
                     <input
                         required
@@ -167,10 +165,10 @@ function Checkout() {
                         onChange={handleInputChange}
                         type="text"
                         placeholder="Street Address"
-                        className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
+                        className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
                     />
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <input
                             required
                             name="city"
@@ -178,7 +176,7 @@ function Checkout() {
                             onChange={handleInputChange}
                             type="text"
                             placeholder="City"
-                            className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
+                            className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
                         />
                         <input
                             required
@@ -187,11 +185,11 @@ function Checkout() {
                             onChange={handleInputChange}
                             type="text"
                             placeholder="State"
-                            className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
+                            className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
                         />
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <input
                             required
                             name="pincode"
@@ -199,7 +197,7 @@ function Checkout() {
                             onChange={handleInputChange}
                             type="text"
                             placeholder="Pincode"
-                            className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
+                            className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
                         />
                         <input
                             required
@@ -208,7 +206,7 @@ function Checkout() {
                             onChange={handleInputChange}
                             type="text"
                             placeholder="Phone number"
-                            className="border border-gray-300 rounded py-1.5 px-3.5 w-full outline-none focus:border-black"
+                            className="border border-gray-300 rounded py-2 px-4 w-full outline-none focus:border-black transition-colors"
                         />
                     </div>
                 </div>

@@ -8,7 +8,7 @@ function Search(props){
         props.setsearchtxt(e.target.value);
     }
     return (
-        <div className='w-[300px] border border-gray-300 rounded-full py-3 px-4 shadow-inner flex'>
+        <div className='w-full max-w-[200px] sm:max-w-[300px] border border-gray-300 rounded-full py-2 px-3 sm:py-3 sm:px-4 shadow-inner flex'>
             <input
                 value={props.searchtxt}
                 onChange={onChange}

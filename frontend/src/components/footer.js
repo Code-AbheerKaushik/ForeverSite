@@ -3,30 +3,30 @@ import { assets } from '../assets/frontend_assets/assets'
 function Footer() {
     return (
         <>
-            <div className='w-[1240px]  flex flex-col mx-auto mt-40  items-center justify-center'>
-                <h2 className="font-[Outfit] text-[36px] font-medium text-gray-900">
+            <div className='w-full max-w-[1240px] flex flex-col mx-auto mt-20 md:mt-40 items-center justify-center px-4'>
+                <h2 className="font-[Outfit] text-[24px] md:text-[36px] font-medium text-gray-900 text-center">
                     Subscribe now & get 20% off
                 </h2>
 
-                <p className="font-[Outfit] text-[18px] text-gray-400 my-4">
+                <p className="font-[Outfit] text-[14px] md:text-[18px] text-gray-400 my-4 text-center">
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                 </p>
-                <div className='flex'>
+                <div className='flex flex-col sm:flex-row w-full max-w-[600px] gap-2.5 sm:gap-0 mt-2'>
                     <input
                         placeholder="Enter your email"
-                        className="font-[Outfit] text-base placeholder:text-gray-400 border px-3 w-[600px] border-gray-300 focus:border-gray-500 outline-none"
+                        className="font-[Outfit] text-base placeholder:text-gray-400 px-4 py-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded sm:rounded-r-none transition-colors"
                     />
 
-                    <button className="bg-black text-white text-[13px] font-medium tracking-wide uppercase px-14 py-5">
+                    <button className="bg-black text-white text-[13px] font-semibold tracking-widest uppercase px-8 py-3.5 rounded sm:rounded-l-none hover:bg-gray-900 active:bg-gray-800 transition-colors shadow-sm shrink-0">
                         Subscribe
                     </button>
                 </div>
 
-                <div className='w-[1240px]  flex flex-col mx-auto mt-40 justify-between mb-20'>
-                    <div className='flex justify-between'>
-                        <div className='flex flex-col w-[500px]'>
-                            <img src={assets.logo} alt="logo" className='w-[145px] h-[35px]' />
-                            <p className="w-[500px] text-gray-500 text-[14px] my-5 leading-8">
+                <div className='w-full max-w-[1240px] flex flex-col mx-auto mt-16 md:mt-24 justify-between mb-16'>
+                    <div className='flex flex-col md:flex-row gap-10 md:gap-20 justify-between w-full text-left'>
+                        <div className='flex flex-col w-full max-w-[500px]'>
+                            <img src={assets.logo} alt="logo" className='w-[145px] h-[35px] select-none' />
+                            <p className="w-full text-gray-500 text-sm my-4 leading-7">
                                 Lorem Ipsum is simply dummy text of the printing and typesetting
                                 industry. Lorem Ipsum has been the industry's standard dummy text
                                 ever since the 1500s, when an unknown printer took a galley of type
@@ -34,29 +34,29 @@ function Footer() {
                             </p>
                         </div>
                         <div className='flex flex-col'>
-                            <h3 className="text-2xl font-medium text-gray-800 mb-5">
+                            <h3 className="text-base md:text-lg font-bold text-gray-800 mb-4 tracking-wider uppercase">
                                 COMPANY
                             </h3>
-                            <ul className="font-[Outfit] text-[18px] text-gray-500 space-y-3">
-                                <li>Home</li>
-                                <li>About us</li>
-                                <li>Delivery</li>
-                                <li>Privacy policy</li>
+                            <ul className="font-[Outfit] text-sm text-gray-500 space-y-3.5">
+                                <li className="hover:text-black cursor-pointer transition-colors">Home</li>
+                                <li className="hover:text-black cursor-pointer transition-colors">About us</li>
+                                <li className="hover:text-black cursor-pointer transition-colors">Delivery</li>
+                                <li className="hover:text-black cursor-pointer transition-colors">Privacy policy</li>
                             </ul>
                         </div>
                         <div className='flex flex-col'>
-                            <h3 className="text-2xl font-medium text-gray-800 mb-5">
+                            <h3 className="text-base md:text-lg font-bold text-gray-800 mb-4 tracking-wider uppercase">
                                 GET IN TOUCH
                             </h3>
-                            <div className="flex flex-col gap-2 text-gray-500 text-base">
-                                <p>+1-212-456-7890</p>
-                                <p>contact@foreveryou.com</p>
+                            <div className="flex flex-col gap-3 text-gray-500 text-sm">
+                                <p className="hover:text-black cursor-pointer transition-colors">+1-212-456-7890</p>
+                                <p className="hover:text-black cursor-pointer transition-colors">contact@foreveryou.com</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <p className="py-5 text-[15px] text-center text-gray-500">
+                <div className="w-full border-t border-gray-100 mt-6">
+                    <p className="py-4 text-xs md:text-sm text-center text-gray-500">
                         © 2024 forever.com - All Rights Reserved.
                     </p>
                 </div>

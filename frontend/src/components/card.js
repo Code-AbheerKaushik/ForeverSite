@@ -11,12 +11,14 @@ function Card(props) {
     navigate(`/product/${props.product._id}`)
   }
   return (
-    <div onClick={productclick} className='cursor-pointer'>
-      <div className='overflow-hidden relative'>
-        <ImageWithSpinner className="transition-transform duration-300 hover:scale-110 w-full h-full object-cover" src={props.product.image[0]} alt={props.product.name} />
+    <div onClick={productclick} className='cursor-pointer group flex flex-col h-full bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 p-2 sm:p-3'>
+      <div className='overflow-hidden relative aspect-[3/4] w-full bg-gray-100 rounded'>
+        <ImageWithSpinner className="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" src={props.product.image[0]} alt={props.product.name} />
       </div>
-      <p className='mt-2 text-sm'>{props.product.name}</p>
-      <p className='text-sm'>{`$${props.product.price}`}</p>
+      <div className='flex flex-col flex-1 mt-2.5 sm:mt-3 justify-between'>
+        <p className='text-xs sm:text-sm font-medium text-gray-800 line-clamp-2 leading-tight group-hover:text-black transition-colors min-h-[2.5rem]'>{props.product.name}</p>
+        <p className='text-sm sm:text-base font-semibold text-gray-900 mt-1'>{`$${props.product.price}`}</p>
+      </div>
     </div>
   )
 }

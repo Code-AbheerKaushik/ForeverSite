@@ -3,7 +3,7 @@ import { assets } from '../assets/frontend_assets/assets'
 function Contact() {
     return (
         <>
-            <div className='w-[1240px] flex mx-auto my-10 items-center justify-center'>
+            <div className='w-full max-w-[1240px] flex mx-auto my-10 items-center justify-center px-4'>
                 <div className='flex items-center gap-3'>
                     <h2 className='text-xl font-light tracking-[0.2em] text-stone-700 uppercase'>
                         Contact Us
@@ -11,9 +11,9 @@ function Contact() {
                     <div className='w-8 h-[1px] bg-stone-500'></div>
                 </div>
             </div>
-            <div className='flex justify-center'>
-                <img src={assets.contact_img} alt="logo" className='w-[520px] h-[520px] mr-7' />
-                <div className="flex flex-col justify-center items-start gap-6 max-w-[380px]">
+            <div className='flex flex-col md:flex-row justify-center items-center gap-8 px-4 py-6 mb-12'>
+                <img src={assets.contact_img} alt="logo" className='w-full max-w-[480px] h-auto object-cover' />
+                <div className="flex flex-col justify-center items-start gap-6 w-full max-w-[380px]">
                     <p className="text-2xl font-semibold text-gray-700">
                         Our Store
                     </p>
