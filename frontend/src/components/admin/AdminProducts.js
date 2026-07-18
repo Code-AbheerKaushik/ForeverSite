@@ -99,9 +99,10 @@ function AdminProducts() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* Table / Cards container */}
             <div style={tableContainerStyle}>
-                <div style={{ overflowX: 'auto' }}>
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
                             <tr style={{ backgroundColor: '#f9fafb' }}>
@@ -172,6 +173,58 @@ function AdminProducts() {
                             })}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile View Stacked Cards */}
+                <div className="block md:hidden divide-y divide-gray-150 bg-white">
+                    {loading ? (
+                        <div className="text-center py-10 text-gray-400">Loading…</div>
+                    ) : paginated.length === 0 ? (
+                        <div className="text-center py-10 text-gray-400">No products found</div>
+                    ) : paginated.map((p) => {
+                        const outOfStock   = p.stock === 0;
+                        const lowStock     = p.stock > 0 && p.stock < 10;
+                        return (
+                            <div key={p._id} className="p-4 flex gap-4 items-center justify-between">
+                                <div className="flex gap-3 items-center min-w-0">
+                                    <img
+                                        src={p.image?.[0]}
+                                        alt={p.name}
+                                        style={{ width: '48px', height: '56px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e5e7eb' }}
+                                        className="shrink-0"
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-gray-800 text-sm truncate">{p.name}</p>
+                                        <p className="text-xs text-gray-400 mt-0.5">{p.category} • {p.subCategory}</p>
+                                        <p className="text-sm font-bold text-gray-900 mt-1">${p.price}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-end gap-2.5 shrink-0">
+                                    {outOfStock ? (
+                                        <span style={badgeStyle('#fef2f2', '#b91c1c')}>Out of Stock</span>
+                                    ) : lowStock ? (
+                                        <span style={badgeStyle('#fffbeb', '#b45309')}>{p.stock} — Low</span>
+                                    ) : (
+                                        <span style={badgeStyle('#f0fdf4', '#15803d')}>{p.stock} Units</span>
+                                    )}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => navigate(`/admin/products/edit/${p._id}`)}
+                                            style={editBtnStyle}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => setDeleteTarget({ _id: p._id, name: p.name })}
+                                            style={deleteBtnStyle}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Pagination */}

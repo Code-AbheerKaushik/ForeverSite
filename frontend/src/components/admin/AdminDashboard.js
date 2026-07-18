@@ -48,8 +48,8 @@ function AdminDashboard() {
                 <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>Your store at a glance</p>
             </div>
 
-            {/* Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '32px' }}>
+            {/* Stats Grid - Stacked on Mobile, 2-col on small, 3-col on large */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 {STAT_CARDS.map(card => (
                     <div key={card.key} style={statCardStyle}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -74,7 +74,7 @@ function AdminDashboard() {
                 ))}
             </div>
 
-            {/* Recent Orders */}
+            {/* Recent Orders Container */}
             <div style={tableContainerStyle}>
                 <div style={{ padding: '20px 24px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#111827', margin: 0 }}>Recent Orders</h2>
@@ -82,7 +82,9 @@ function AdminDashboard() {
                         View All →
                     </button>
                 </div>
-                <div style={{ overflowX: 'auto' }}>
+
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table style={tableStyle}>
                         <thead>
                             <tr style={{ backgroundColor: '#f9fafb' }}>
@@ -126,6 +128,38 @@ function AdminDashboard() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile View Stacked Cards */}
+                <div className="block md:hidden divide-y divide-gray-100 bg-white">
+                    {recentOrders.map((order) => {
+                        const s = STATUS_COLORS[order.orderStatus] || STATUS_COLORS.placed;
+                        return (
+                            <div 
+                                key={order._id}
+                                onClick={() => navigate(`/admin/orders/${order._id}`)}
+                                className="p-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer flex flex-col gap-2.5 transition-colors"
+                            >
+                                <div className="flex justify-between items-center">
+                                    <span className="font-mono text-sm text-blue-600 font-semibold">#{order._id.slice(-8)}</span>
+                                    <span style={{ backgroundColor: s.bg, color: s.text, padding: '3px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: '600', textTransform: 'capitalize' }}>
+                                        {order.orderStatus}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm text-gray-700">
+                                    <span className="truncate max-w-[200px]">{order.user?.email || '—'}</span>
+                                    <span className="font-bold text-gray-900">${order.amount}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-xs text-gray-400">
+                                    <span>Method: {order.paymentMethod}</span>
+                                    <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {recentOrders.length === 0 && (
+                        <div className="text-center py-10 text-gray-400 text-sm">No orders yet</div>
+                    )}
                 </div>
             </div>
         </div>
