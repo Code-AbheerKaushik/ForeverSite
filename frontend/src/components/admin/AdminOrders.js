@@ -59,7 +59,7 @@ function AdminOrders() {
             </div>
 
             <div style={tableContainerStyle}>
-                <div style={{ overflowX: 'auto' }}>
+                <div className="hidden md:block overflow-x-auto">
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
                             <tr style={{ backgroundColor: '#f9fafb' }}>
@@ -144,6 +144,37 @@ function AdminOrders() {
                             })}
                         </tbody>
                     </table>
+                </div>
+                <div className="block md:hidden divide-y divide-gray-100">
+                    {loading ? (
+                        <div className="p-10 text-center text-sm text-gray-400">Loading orders…</div>
+                    ) : orders.length === 0 ? (
+                        <div className="p-10 text-center text-sm text-gray-400">No orders found</div>
+                    ) : orders.map(order => {
+                        const status = STATUS_COLORS[order.orderStatus] || STATUS_COLORS.placed;
+                        const isUpdating = updating === order._id;
+                        return (
+                            <article key={order._id} className="p-4 space-y-3">
+                                <div className="flex items-start justify-between gap-3">
+                                    <button onClick={() => navigate(`/admin/orders/${order._id}`)} className="font-mono text-sm font-semibold text-blue-600">#{order._id.slice(-8)}</button>
+                                    <span style={badgeStyle(status.bg, status.text)}>{order.orderStatus}</span>
+                                </div>
+                                <p className="break-all text-sm text-gray-600">{order.user?.email || '—'}</p>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                    <span className="text-gray-500">Items <b className="ml-1 text-gray-800">{order.products?.length || 0}</b></span>
+                                    <span className="text-gray-500">Amount <b className="ml-1 text-gray-800">${order.amount}</b></span>
+                                    <span className="text-gray-500">{order.paymentMethod}</span>
+                                    <span className="text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    <select value={order.orderStatus} disabled={isUpdating} onChange={e => updateStatus(order._id, e.target.value)} className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm capitalize" style={{ backgroundColor: status.bg, color: status.text }}>
+                                        {ORDER_STATUSES.map(st => <option key={st} value={st}>{st}</option>)}
+                                    </select>
+                                    <button onClick={() => navigate(`/admin/orders/${order._id}`)} className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700">View order</button>
+                                </div>
+                            </article>
+                        );
+                    })}
                 </div>
             </div>
         </div>

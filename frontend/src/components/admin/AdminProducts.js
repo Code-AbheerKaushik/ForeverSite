@@ -61,7 +61,7 @@ function AdminProducts() {
     return (
         <div>
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: 0 }}>All Products</h1>
                     <p style={{ fontSize: '13px', color: '#6b7280', marginTop: '2px' }}>{products.length} products total</p>
@@ -69,6 +69,7 @@ function AdminProducts() {
                 <button
                     onClick={() => navigate('/admin/products/add')}
                     style={primaryBtnStyle}
+                    className="w-full sm:w-auto"
                     onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1d4ed8'}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
                 >
@@ -77,15 +78,16 @@ function AdminProducts() {
             </div>
 
             {/* Filters */}
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <input
                     type="text"
                     placeholder="Search by name…"
                     value={search}
                     onChange={e => { setSearch(e.target.value); setPage(1); }}
                     style={inputStyle}
+                    className="w-full sm:w-[220px]"
                 />
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
                     <button
                         onClick={() => { setCatFilter(''); setPage(1); }}
                         style={catFilter === '' ? activePillStyle : pillStyle}
@@ -185,8 +187,8 @@ function AdminProducts() {
                         const outOfStock   = p.stock === 0;
                         const lowStock     = p.stock > 0 && p.stock < 10;
                         return (
-                            <div key={p._id} className="p-4 flex gap-4 items-center justify-between">
-                                <div className="flex gap-3 items-center min-w-0">
+                            <div key={p._id} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex min-w-0 gap-3 items-center">
                                     <img
                                         src={p.image?.[0]}
                                         alt={p.name}
@@ -199,7 +201,7 @@ function AdminProducts() {
                                         <p className="text-sm font-bold text-gray-900 mt-1">${p.price}</p>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-2.5 shrink-0">
+                                <div className="flex flex-row items-center justify-between gap-3 sm:flex-col sm:items-end">
                                     {outOfStock ? (
                                         <span style={badgeStyle('#fef2f2', '#b91c1c')}>Out of Stock</span>
                                     ) : lowStock ? (

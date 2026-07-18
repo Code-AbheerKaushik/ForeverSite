@@ -94,8 +94,8 @@ function AdminEditProduct() {
     if (!form)   return <p style={{ color: '#dc2626' }}>{error || 'Product not found.'}</p>;
 
     return (
-        <div style={{ maxWidth: '760px' }}>
-            <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="w-full max-w-[760px]">
+            <div className="mb-6 flex items-center gap-3">
                 <button onClick={() => navigate('/admin/products')} style={backBtnStyle}>← Back</button>
                 <div>
                     <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: 0 }}>Edit Product</h1>
@@ -114,7 +114,7 @@ function AdminEditProduct() {
                         <textarea style={{ ...inputStyle, height: '100px', resize: 'vertical' }} value={form.description} onChange={e => set('description', e.target.value)} />
                     </FormGroup>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FormGroup label="Price ($)" required>
                             <input style={inputStyle} type="number" min="0" value={form.price} onChange={e => set('price', e.target.value)} />
                         </FormGroup>
@@ -123,7 +123,7 @@ function AdminEditProduct() {
                         </FormGroup>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FormGroup label="Category">
                             <select style={inputStyle} value={form.category} onChange={e => set('category', e.target.value)}>
                                 {CATEGORIES.map(c => <option key={c}>{c}</option>)}
@@ -153,9 +153,9 @@ function AdminEditProduct() {
                                 value={url} onChange={e => handleImageChange(i, e.target.value)}
                                 placeholder={`Image URL ${i + 1}`} />
                         ))}
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                        <div className="mt-2 flex flex-wrap gap-2">
                             {form.image.filter(Boolean).map((url, i) => (
-                                <img key={i} src={url} alt="" style={{ width: '56px', height: '64px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e5e7eb' }} onError={e => e.target.style.display = 'none'} />
+                                <img key={i} src={url} alt="" className="h-20 w-16 max-w-[30%] rounded border border-gray-200 object-cover" onError={e => e.target.style.display = 'none'} />
                             ))}
                         </div>
                     </FormGroup>
@@ -168,11 +168,11 @@ function AdminEditProduct() {
                     {error   && <p style={{ color: '#dc2626', fontSize: '13px' }}>{error}</p>}
                     {success && <p style={{ color: '#15803d', fontSize: '13px' }}>{success}</p>}
 
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
-                        <button type="submit" disabled={saving} style={{ ...submitBtnStyle, opacity: saving ? 0.7 : 1 }}>
+                    <div className="mt-1 flex flex-col gap-3 sm:flex-row">
+                        <button type="submit" disabled={saving} style={{ ...submitBtnStyle, opacity: saving ? 0.7 : 1 }} className="w-full sm:w-auto">
                             {saving ? 'Saving…' : 'Save Changes'}
                         </button>
-                        <button type="button" onClick={() => navigate('/admin/products')} style={cancelBtnStyle}>
+                        <button type="button" onClick={() => navigate('/admin/products')} style={cancelBtnStyle} className="w-full sm:w-auto">
                             Cancel
                         </button>
                     </div>
@@ -193,7 +193,7 @@ function FormGroup({ label, children, required }) {
     );
 }
 
-const cardStyle      = { backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' };
+const cardStyle      = { backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: 'clamp(16px, 5vw, 28px)', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' };
 const inputStyle     = { padding: '9px 12px', border: '1px solid #e5e7eb', borderRadius: '6px', fontSize: '14px', fontFamily: 'Outfit, sans-serif', outline: 'none', width: '100%', boxSizing: 'border-box', color: '#111827' };
 const sizeBtn        = { padding: '7px 14px', border: '1px solid #e5e7eb', backgroundColor: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500', color: '#374151' };
 const activeSizeBtn  = { ...sizeBtn, backgroundColor: '#111827', color: '#fff', border: '1px solid #111827' };

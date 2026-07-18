@@ -333,7 +333,7 @@ function Profile() {
                             <FormField label="Label (e.g. Home, Work, Hostel)">
                                 <input className={inputCls} value={addrForm.label} onChange={e => setAddrForm(f => ({ ...f, label: e.target.value }))} placeholder="Home" />
                             </FormField>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <FormField label="Full Name">
                                     <input className={inputCls} value={addrForm.fullName} onChange={e => setAddrForm(f => ({ ...f, fullName: e.target.value }))} placeholder="Abheer Kaushik" />
                                 </FormField>
@@ -344,7 +344,7 @@ function Profile() {
                             <FormField label="Street Address">
                                 <input className={inputCls} value={addrForm.address} onChange={e => setAddrForm(f => ({ ...f, address: e.target.value }))} placeholder="123 ABC Colony" />
                             </FormField>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <FormField label="City">
                                     <input className={inputCls} value={addrForm.city} onChange={e => setAddrForm(f => ({ ...f, city: e.target.value }))} placeholder="Bhopal" />
                                 </FormField>
@@ -358,17 +358,17 @@ function Profile() {
                                 </select>
                             </FormField>
                         </div>
-                        <div className="flex gap-3 mt-6">
+                        <div className="flex flex-col gap-3 mt-6 sm:flex-row">
                             <button
                                 onClick={saveAddress}
                                 disabled={savingAddr}
-                                className="bg-black text-white text-sm px-6 py-2.5 rounded hover:bg-gray-800 transition-colors disabled:opacity-60 tracking-wide"
+                                className="w-full sm:w-auto bg-black text-white text-sm px-6 py-3 sm:py-2.5 rounded hover:bg-gray-800 transition-colors disabled:opacity-60 tracking-wide"
                             >
                                 {savingAddr ? 'Saving…' : addrModal === 'add' ? 'Add Address' : 'Save Changes'}
                             </button>
                             <button
                                 onClick={() => setAddrModal(null)}
-                                className="border border-gray-300 text-gray-600 text-sm px-5 py-2.5 rounded hover:border-gray-500 transition-colors"
+                                className="w-full sm:w-auto border border-gray-300 text-gray-600 text-sm px-5 py-3 sm:py-2.5 rounded hover:border-gray-500 transition-colors"
                             >
                                 Cancel
                             </button>
@@ -422,7 +422,7 @@ function InfoRow({ label, value }) {
     return (
         <div className="flex gap-3 items-start text-sm">
             <span className="text-gray-400 w-14 shrink-0">{label}</span>
-            <span className="text-gray-700 font-medium">{value}</span>
+            <span className="min-w-0 break-words text-gray-700 font-medium">{value}</span>
         </div>
     );
 }

@@ -68,20 +68,20 @@ function AdminOrderDetail() {
     const currentStepIdx = TIMELINE_STEPS.indexOf(order.orderStatus);
 
     return (
-        <div style={{ maxWidth: '860px' }}>
+        <div className="w-full max-w-[860px]">
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '28px' }}>
+            <div className="mb-7 flex flex-wrap items-center gap-3">
                 <button onClick={() => navigate('/admin/orders')} style={backBtnStyle}>← Orders</button>
-                <div style={{ flex: 1 }}>
+                <div className="min-w-0 flex-1">
                     <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#111827', margin: 0 }}>Order Detail</h1>
-                    <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0', fontFamily: 'monospace' }}>{order._id}</p>
+                    <p className="truncate" style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0', fontFamily: 'monospace' }}>{order._id}</p>
                 </div>
                 <span style={{ backgroundColor: sc.bg, color: sc.text, padding: '5px 14px', borderRadius: '999px', fontSize: '13px', fontWeight: '600', textTransform: 'capitalize' }}>
                     {order.orderStatus}
                 </span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
 
                 {/* Left Column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -93,25 +93,21 @@ function AdminOrderDetail() {
                             {order.products.map((item, idx) => {
                                 if (!item.product) return null;
                                 return (
-                                    <div key={idx} style={{
-                                        display: 'flex', alignItems: 'center', gap: '14px',
-                                        padding: '14px 0',
-                                        borderBottom: idx < order.products.length - 1 ? '1px solid #f3f4f6' : 'none'
-                                    }}>
+                                    <div key={idx} className="flex flex-wrap items-center gap-3 py-3 sm:flex-nowrap" style={{ borderBottom: idx < order.products.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
                                         <img
                                             src={item.product.image?.[0]}
                                             alt={item.product.name}
                                             style={{ width: '52px', height: '60px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #e5e7eb', flexShrink: 0 }}
                                         />
-                                        <div style={{ flex: 1 }}>
-                                            <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: '0 0 4px' }}>{item.product.name}</p>
-                                            <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: '#6b7280' }}>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="break-words" style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: '0 0 4px' }}>{item.product.name}</p>
+                                            <div className="flex flex-wrap gap-x-3 gap-y-1" style={{ fontSize: '12px', color: '#6b7280' }}>
                                                 <span>Size: <strong style={{ color: '#374151' }}>{item.size}</strong></span>
                                                 <span>Qty: <strong style={{ color: '#374151' }}>{item.quantity}</strong></span>
                                                 <span>Price: <strong style={{ color: '#374151' }}>${item.product.price}</strong></span>
                                             </div>
                                         </div>
-                                        <p style={{ fontSize: '15px', fontWeight: '700', color: '#111827' }}>
+                                        <p className="ml-auto" style={{ fontSize: '15px', fontWeight: '700', color: '#111827' }}>
                                             ${(item.product.price * item.quantity).toFixed(2)}
                                         </p>
                                     </div>

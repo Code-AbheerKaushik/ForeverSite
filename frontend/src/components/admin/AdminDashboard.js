@@ -37,7 +37,7 @@ function AdminDashboard() {
             if (ordersData.success) setRecentOrders(ordersData.data);
         }).catch(console.error)
           .finally(() => setLoading(false));
-    }, []);
+    }, [token]);
 
     if (loading) return <p style={{ color: '#6b7280', fontSize: '15px' }}>Loading dashboard...</p>;
 

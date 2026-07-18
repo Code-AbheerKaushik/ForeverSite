@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { CartContext } from '../context';
-
-const ADMIN_EMAIL = "abheerkaushik2@gmail.com";
 
 function AdminLayout() {
     const { userEmail, setUserEmail, setCartNo, setcartarray, setCartTotal } = useContext(CartContext);
