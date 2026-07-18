@@ -1,11 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useLayoutEffect, useRef, useState } from 'react';
 
-function ImageWithSpinner({ src, alt, className, onLoad, onError, loading: loadingMode = 'lazy', ...props }) {
-  const [isLoading, setIsLoading] = useState(Boolean(src));
+const ImageWithSpinner = memo(function ImageWithSpinner({ src, alt, className, onLoad, onError, loading: loadingMode = 'lazy', ...props }) {
+  const imageRef = useRef(null);
+  const normalizedSrc = typeof src === 'string' ? src.trim() : '';
+  const [status, setStatus] = useState(normalizedSrc ? 'loading' : 'idle');
 
-  useEffect(() => {
-    setIsLoading(Boolean(src));
-  }, [src]);
+  // Check the actual <img> node: cached images become visible without extra preloads.
+  useLayoutEffect(() => {
+    const image = imageRef.current;
+    if (!normalizedSrc) {
+      setStatus('idle');
+    } else if (image?.complete) {
+      setStatus(image.naturalWidth > 0 ? 'loaded' : 'error');
+    } else {
+      setStatus('loading');
+    }
+  }, [normalizedSrc]);
+
+  const isLoading = status === 'loading';
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
@@ -15,23 +27,24 @@ function ImageWithSpinner({ src, alt, className, onLoad, onError, loading: loadi
         </div>
       )}
       <img
-        src={src}
+        ref={imageRef}
+        src={normalizedSrc}
         alt={alt}
         loading={loadingMode}
         decoding="async"
-        className={`${className || ''} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`${className || ''} transition-opacity duration-200`}
         onLoad={(event) => {
-          setIsLoading(false);
+          setStatus('loaded');
           onLoad?.(event);
         }}
         onError={(event) => {
-          setIsLoading(false);
+          setStatus('error');
           onError?.(event);
         }}
         {...props}
       />
     </div>
   );
-}
+});
 
 export default ImageWithSpinner;
