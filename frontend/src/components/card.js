@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router'
 import ImageWithSpinner from './ImageWithSpinner'
-function Card(props) {
+const Card = React.memo(function Card(props) {
   const navigate = useNavigate();
   const productclick = () => {
     window.scrollTo({
@@ -13,7 +13,7 @@ function Card(props) {
   return (
     <div onClick={productclick} className='cursor-pointer group flex flex-col h-full bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 p-2 sm:p-3'>
       <div className='overflow-hidden relative aspect-[3/4] w-full bg-gray-100 rounded'>
-        <ImageWithSpinner className="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" src={props.product.image[0]} alt={props.product.name} />
+        <ImageWithSpinner loading="lazy" className="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" src={props.product.image[0]} alt={props.product.name} />
       </div>
       <div className='flex flex-col flex-1 mt-2.5 sm:mt-3 justify-between'>
         <p className='text-xs sm:text-sm font-medium text-gray-800 line-clamp-2 leading-tight group-hover:text-black transition-colors min-h-[2.5rem]'>{props.product.name}</p>
@@ -21,6 +21,6 @@ function Card(props) {
       </div>
     </div>
   )
-}
+});
 
 export default Card
