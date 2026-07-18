@@ -19,6 +19,18 @@ app.get('/ping',(req,res)=>{
     console.log('pong')
     res.send('pong')
 })
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "ForeverBuy Backend Running"
+  });
+});
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: "healthy"
+  });
+});
 app.use(cors());
 app.use(express.json())
 app.use('/auth',Routes)
