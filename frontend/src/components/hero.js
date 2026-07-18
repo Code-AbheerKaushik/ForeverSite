@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import { assets } from '../assets/frontend_assets/assets'
 import Card from "./card";
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 function Hero() {
     const [bestSellers, setBestSeller] = useState([]);
     const [latestProducts, setLatestProducts] = useState([]);
     const getBsetSeller = async() => {
         try {
-            const url = "http://localhost:8080/products/getbestseller";
+            const url = `${API_BASE_URL}/products/getbestseller`;
             const res = await fetch(url, {
                 method: "GET",
                 headers: {
@@ -22,7 +23,7 @@ function Hero() {
     };
 const getLatestProducts = async () => {
     try {
-        const url = "http://localhost:8080/products/getlatest";
+        const url = `${API_BASE_URL}/products/getlatest`;
 
         const res = await fetch(url, {
             method: "GET",

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const CATEGORIES    = ['Men', 'Women', 'Kids'];
 const SUB_CATEGORIES = ['Topwear', 'Bottomwear', 'Winterwear'];
@@ -57,7 +58,7 @@ function AdminAddProduct() {
                 date: new Date().toISOString(),
             };
 
-            const res  = await fetch('http://localhost:8080/products/addProduct', {
+            const res  = await fetch(`${API_BASE_URL}/products/addProduct`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', authorization: token },
                 body: JSON.stringify(payload),

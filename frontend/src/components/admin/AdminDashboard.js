@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const STAT_CARDS = [
     { key: 'totalProducts',  label: 'Total Products',  icon: '📦', color: '#3b82f6' },
@@ -29,8 +30,8 @@ function AdminDashboard() {
         const headers = { 'Content-Type': 'application/json', authorization: token };
 
         Promise.all([
-            fetch('http://localhost:8080/admin-api/stats', { headers }).then(r => r.json()),
-            fetch('http://localhost:8080/admin-api/recent-orders', { headers }).then(r => r.json()),
+            fetch(`${API_BASE_URL}/admin-api/stats`, { headers }).then(r => r.json()),
+            fetch(`${API_BASE_URL}/admin-api/recent-orders`, { headers }).then(r => r.json()),
         ]).then(([statsData, ordersData]) => {
             if (statsData.success) setStats(statsData.data);
             if (ordersData.success) setRecentOrders(ordersData.data);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from './Alert';
 import ImageWithSpinner from './ImageWithSpinner';
+import { API_BASE_URL } from '../config';
 
 function MyOrders() {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ function MyOrders() {
 
         const fetchOrders = async () => {
             try {
-                const res = await fetch("http://localhost:8080/orders/myorders", {
+                const res = await fetch(`${API_BASE_URL}/orders/myorders`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import Product_cart from './procut_cart'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router';
 import { CartContext } from './context';
+import { API_BASE_URL } from '../config';
 function Cart() {
     const navigate = useNavigate();
     const {cartarray,setcartarray,cartTotal,setCartTotal }=useContext(CartContext)
@@ -18,7 +19,7 @@ function Cart() {
             setcartarray(guestCart);
             return;
         }
-        const url ="http://localhost:8080/products/getcart"
+        const url =`${API_BASE_URL}/products/getcart`
         try {
       const res = await fetch(url, {
         method: "GET",

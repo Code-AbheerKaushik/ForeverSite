@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from './context';
 import Alert from './Alert';
+import { API_BASE_URL } from '../config';
 
 function Checkout() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ function Checkout() {
         window.scrollTo({ top: 0, behavior: "smooth" });
 
         // Try to prefill from saved default address
-        fetch("http://localhost:8080/user/profile", {
+        fetch(`${API_BASE_URL}/user/profile`, {
             headers: { authorization: token }
         })
         .then(r => r.json())
@@ -90,7 +91,7 @@ function Checkout() {
         }
 
         try {
-            const url = "http://localhost:8080/orders/create";
+            const url = `${API_BASE_URL}/orders/create`;
             const res = await fetch(url, {
                 method: "POST",
                 headers: {

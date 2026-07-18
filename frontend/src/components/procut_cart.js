@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/frontend_assets/assets'
 import { CartContext } from './context'
 import ImageWithSpinner from './ImageWithSpinner'
+import { API_BASE_URL } from '../config'
 
 function Product_cart(props) {
     const { cartarray, setcartarray, setCartNo } = useContext(CartContext)
@@ -63,7 +64,7 @@ function Product_cart(props) {
         }
 
         try {
-            const res = await fetch("http://localhost:8080/products/updatecart", {
+            const res = await fetch(`${API_BASE_URL}/products/updatecart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -112,7 +113,7 @@ function Product_cart(props) {
             return;
         }
         try {
-            const res = await fetch("http://localhost:8080/products", {
+            const res = await fetch(`${API_BASE_URL}/products`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

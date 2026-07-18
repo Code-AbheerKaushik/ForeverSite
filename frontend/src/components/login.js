@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { CartContext } from './context';
 import { useContext } from 'react';
 import Alert from './Alert';
+import { API_BASE_URL } from '../config';
 
 function Login(props) {
     const { setCartNo, setUserEmail } = useContext(CartContext);
@@ -31,7 +32,7 @@ function Login(props) {
         }
 
         try {
-            const res = await fetch("http://localhost:8080/auth/login", {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -51,7 +52,7 @@ function Login(props) {
                     try {
                         const guestCart = JSON.parse(guestCartStr);
                         if (guestCart && guestCart.length > 0) {
-                            const mergeRes = await fetch("http://localhost:8080/products/mergecart", {
+                            const mergeRes = await fetch(`${API_BASE_URL}/products/mergecart`, {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",

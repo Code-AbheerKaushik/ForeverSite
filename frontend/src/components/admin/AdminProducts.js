@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const CATEGORIES = ['Men', 'Women', 'Kids'];
 
@@ -23,7 +24,7 @@ function AdminProducts() {
         if (catFilter) params.set('category', catFilter);
 
         try {
-            const res  = await fetch(`http://localhost:8080/admin-api/products?${params}`, {
+            const res  = await fetch(`${API_BASE_URL}/admin-api/products?${params}`, {
                 headers: { authorization: token },
             });
             const data = await res.json();
@@ -43,7 +44,7 @@ function AdminProducts() {
     const handleDelete = async () => {
         if (!deleteTarget) return;
         try {
-            await fetch(`http://localhost:8080/admin-api/products/${deleteTarget._id}`, {
+            await fetch(`${API_BASE_URL}/admin-api/products/${deleteTarget._id}`, {
                 method: 'DELETE',
                 headers: { authorization: token },
             });

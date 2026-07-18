@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { API_BASE_URL } from "../config";
 
 export const CartContext = createContext();
 
@@ -11,7 +12,7 @@ export function CartProvider({ children }) {
     async function getuser() {
       try {
         const res = await fetch(
-          "http://localhost:8080/auth/getuser",
+          `${API_BASE_URL}/auth/getuser`,
           {
             method: "GET",
             headers: {

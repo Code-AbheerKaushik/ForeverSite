@@ -4,6 +4,7 @@ import { assets } from '../assets/frontend_assets/assets';
 import { CartContext } from './context';
 import Alert from './Alert';
 import ImageWithSpinner from './ImageWithSpinner';
+import { API_BASE_URL } from '../config';
 
 function Product(props) {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ function Product(props) {
     };
 
     const getItem = async () => {
-        const url = `http://localhost:8080/products/getItem/${id}`;
+        const url = `${API_BASE_URL}/products/getItem/${id}`;
         try {
             const res = await fetch(url, {
                 method: "GET",
@@ -71,7 +72,7 @@ function Product(props) {
             return;
         }
         
-        const url = `http://localhost:8080/products/addtocart`;
+        const url = `${API_BASE_URL}/products/addtocart`;
         try {
             const res = await fetch(url, {
                 method: "POST",

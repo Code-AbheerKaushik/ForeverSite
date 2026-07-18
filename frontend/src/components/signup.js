@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { CartContext } from './context';
 import Alert from './Alert';
+import { API_BASE_URL } from '../config';
 
 function Signup() {
     const { setCartNo, setUserEmail } = useContext(CartContext);
@@ -37,7 +38,7 @@ function Signup() {
         }
 
         try {
-            const url = "http://localhost:8080/auth/signup";
+            const url = `${API_BASE_URL}/auth/signup`;
 
             const res = await fetch(url, {
                 method: "POST",
@@ -64,7 +65,7 @@ function Signup() {
                     try {
                         const guestCart = JSON.parse(guestCartStr);
                         if (guestCart && guestCart.length > 0) {
-                            const mergeRes = await fetch("http://localhost:8080/products/mergecart", {
+                            const mergeRes = await fetch(`${API_BASE_URL}/products/mergecart`, {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",

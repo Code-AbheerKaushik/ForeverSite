@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const ORDER_STATUSES = ['placed', 'packed', 'shipped', 'delivered', 'cancelled'];
 
@@ -20,7 +21,7 @@ function AdminOrders() {
     const [updating, setUpdating] = useState(null); // order _id being updated
 
     useEffect(() => {
-        fetch('http://localhost:8080/admin-api/orders', {
+        fetch(`${API_BASE_URL}/admin-api/orders`, {
             headers: { authorization: token }
         })
         .then(r => r.json())
@@ -32,7 +33,7 @@ function AdminOrders() {
     const updateStatus = async (orderId, newStatus) => {
         setUpdating(orderId);
         try {
-            const res  = await fetch(`http://localhost:8080/admin-api/orders/${orderId}/status`, {
+            const res  = await fetch(`${API_BASE_URL}/admin-api/orders/${orderId}/status`, {
                 method:  'PUT',
                 headers: { 'Content-Type': 'application/json', authorization: token },
                 body:    JSON.stringify({ orderStatus: newStatus }),

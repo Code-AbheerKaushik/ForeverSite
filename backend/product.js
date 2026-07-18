@@ -147,21 +147,10 @@ const getbestseller = async (req, res) => {
     }
 }
 const addtocart = async (req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        res.status(400).json({
-            message: "Token not found"
-        })
-        return;
-    }
     try {
-        const decoded = jwt.verify(
-            token,
-            "your_secret_key_here"
-        );
         const { item, size } = req.body;
         const pid = item._id.toString();
-        const user = await userModel.findById(decoded.id);
+        const user = await userModel.findById(req.user.id);
         const existing = user.cart.find(
             items =>
                 items.product.toString() === pid
@@ -176,7 +165,6 @@ const addtocart = async (req, res) => {
                 size: size
             });
         }
-        // console.log(user.cart)
         await user.save();
         res.status(201).json({
             message: "product saved successfully",
@@ -187,18 +175,13 @@ const addtocart = async (req, res) => {
     catch (err) {
         res.status(400).json({
             message: "error in saving item to cart",
-            error: err
+            error: err.message
         })
     }
 };
 const getcart = async (req, res) => {
     try {
-        const token = req.headers.authorization;
-        const decoded = jwt.verify(
-            token,
-            "your_secret_key_here"
-        );
-        const user = await userModel.findById(decoded.id);
+        const user = await userModel.findById(req.user.id);
         const userarray = await user.populate("cart.product");
         res.status(200).json({
             message: " cart fetched successfully",
@@ -212,16 +195,10 @@ const getcart = async (req, res) => {
     }
 }
 const deleteproduct = async (req, res) => {
-
     try {
         const { id,size } = req.body
-        const token = req.headers.authorization;
-        const decoded = jwt.verify(
-            token,
-            "your_secret_key_here"
-        );
         console.log(size)
-        const user = await userModel.findById(decoded.id);
+        const user = await userModel.findById(req.user.id);
         user.cart = user.cart.filter((item) => item.product.toString() !==id || item.size!==size)
         await user.save();
         res.status(200).json({
@@ -239,9 +216,7 @@ const deleteproduct = async (req, res) => {
 const updatecart = async (req, res) => {
     try {
         const { productId, currentSize, newQuantity, newSize } = req.body;
-        const token = req.headers.authorization;
-        const decoded = jwt.verify(token, "your_secret_key_here");
-        const user = await userModel.findById(decoded.id);
+        const user = await userModel.findById(req.user.id);
 
         // Find the item to update by productId + currentSize
         const targetIndex = user.cart.findIndex(
@@ -288,19 +263,9 @@ const updatecart = async (req, res) => {
 }
 
 const mergecart = async (req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(400).json({
-            message: "Token not found"
-        });
-    }
     try {
-        const decoded = jwt.verify(
-            token,
-            "your_secret_key_here"
-        );
         const { guestCart } = req.body;
-        const user = await userModel.findById(decoded.id);
+        const user = await userModel.findById(req.user.id);
         
         if (guestCart && Array.isArray(guestCart)) {
             for (const guestItem of guestCart) {

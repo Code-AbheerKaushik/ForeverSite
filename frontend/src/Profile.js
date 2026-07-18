@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from './components/Alert';
+import { API_BASE_URL } from './config';
 
-const BASE = 'http://localhost:8080';
+const BASE = API_BASE_URL;
 
 const STATES = [
     'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat',

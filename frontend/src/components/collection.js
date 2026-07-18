@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Card from './card'
+import { API_BASE_URL } from '../config'
 
 function Collection(props) {
   const [allProducts, setAllProducts] = useState();
@@ -43,7 +44,7 @@ function Collection(props) {
     if (subCategory["Topwear"]) sub.push("Topwear");
     if (subCategory["Bottomwear"]) sub.push("Bottomwear");
     if (subCategory["Winterwear"]) sub.push("Winterwear");
-    const url = `http://localhost:8080/products/filtered`;
+    const url = `${API_BASE_URL}/products/filtered`;
       try {
       const res = await fetch(url, {
         method: "POST",

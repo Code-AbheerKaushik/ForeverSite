@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const CATEGORIES     = ['Men', 'Women', 'Kids'];
 const SUB_CATEGORIES = ['Topwear', 'Bottomwear', 'Winterwear'];
@@ -18,7 +19,7 @@ function AdminEditProduct() {
 
     useEffect(() => {
         // Fetch from admin-api products list and find the specific one by _id
-        fetch(`http://localhost:8080/admin-api/products`, {
+        fetch(`${API_BASE_URL}/admin-api/products`, {
             headers: { authorization: token }
         })
         .then(r => r.json())
@@ -70,7 +71,7 @@ function AdminEditProduct() {
                 stock:       Number(form.stock),
                 bestseller:  form.bestseller,
             };
-            const res  = await fetch(`http://localhost:8080/admin-api/products/${id}`, {
+            const res  = await fetch(`${API_BASE_URL}/admin-api/products/${id}`, {
                 method:  'PUT',
                 headers: { 'Content-Type': 'application/json', authorization: token },
                 body:    JSON.stringify(payload),

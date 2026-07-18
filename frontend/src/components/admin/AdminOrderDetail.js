@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const ORDER_STATUSES = ['placed', 'packed', 'shipped', 'delivered', 'cancelled'];
 
@@ -25,7 +26,7 @@ function AdminOrderDetail() {
     const [saved,    setSaved]    = useState(false);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/admin-api/orders/${id}`, {
+        fetch(`${API_BASE_URL}/admin-api/orders/${id}`, {
             headers: { authorization: token }
         })
         .then(r => r.json())
@@ -42,7 +43,7 @@ function AdminOrderDetail() {
     const handleStatusSave = async () => {
         setSaving(true); setSaved(false);
         try {
-            const res  = await fetch(`http://localhost:8080/admin-api/orders/${id}/status`, {
+            const res  = await fetch(`${API_BASE_URL}/admin-api/orders/${id}/status`, {
                 method:  'PUT',
                 headers: { 'Content-Type': 'application/json', authorization: token },
                 body:    JSON.stringify({ orderStatus: newStatus }),
